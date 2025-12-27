@@ -501,6 +501,23 @@
             color: var(--primary);
         }
 
+        .btn-submit {
+            background: rgba(155, 89, 182, 0.2);
+            border: 2px solid #9b59b6;
+            color: #9b59b6;
+        }
+
+        .btn-submit.submitted {
+            background: rgba(39, 174, 96, 0.2);
+            border-color: var(--success);
+            color: var(--success);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
         .btn-reset {
             background: rgba(255,255,255,0.1);
             border: 2px solid #666;
@@ -617,6 +634,7 @@
 
             <h3 class="section-title">📤 Share Your Results</h3>
             <div class="share-section">
+                <button class="btn share-btn btn-submit" onclick="submitToDashboard()" id="btn-submit">📊 Submit to Dashboard</button>
                 <button class="btn share-btn btn-copy" onclick="copyResults()">📋 Copy to Clipboard</button>
                 <button class="btn share-btn btn-download" onclick="downloadJSON()">💾 Download JSON</button>
                 <button class="btn share-btn btn-reset" onclick="resetQuiz()">🔄 Start Over</button>
@@ -627,6 +645,35 @@
                 <p><strong>Option A:</strong> Just double-click <code>index.html</code> to open in your browser.</p>
                 <p><strong>Option B (Python):</strong> <code>python -m http.server 8000</code> then visit <code>http://localhost:8000</code></p>
                 <p><strong>Option B (Node):</strong> <code>npx serve .</code> or <code>npx http-server</code></p>
+
+                <h4 style="margin-top: 20px;">📊 Dashboard Setup (Google Sheets)</h4>
+                <p>1. Create a new Google Sheet</p>
+                <p>2. Go to Extensions → Apps Script</p>
+                <p>3. Paste this code and save:</p>
+                <pre style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 6px; overflow-x: auto; font-size: 0.7rem; margin: 10px 0;">
+function doPost(e) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  const data = JSON.parse(e.postData.contents);
+
+  // Add headers if first row is empty
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(['Timestamp', 'Who', 'Winner', 'Score', 'All Scores',
+      'Budget', 'Drive', 'Parking', 'Crowd', 'Activities',
+      'Food', 'Drinks', 'Shooting', 'Start', 'Notes']);
+  }
+
+  sheet.appendRow([
+    data.timestamp, data.whoDis, data.winner, data.winnerScore,
+    data.allScores, data.budget, data.driveTime, data.parkingPatience,
+    data.crowdTolerance, data.activities, data.food, data.drinks,
+    data.shootingComfort, data.startTime, data.notes
+  ]);
+
+  return ContentService.createTextOutput('OK');
+}</pre>
+                <p>4. Click Deploy → New Deployment → Web App</p>
+                <p>5. Set "Execute as" = Me, "Who has access" = Anyone</p>
+                <p>6. Copy the Web App URL and paste it in the <code>GOOGLE_SHEETS_WEBHOOK</code> variable at the top of the JavaScript</p>
             </div>
         </div>
     </div>
@@ -711,9 +758,29 @@
         };
 
         // ============================================
+        // GOOGLE SHEETS WEBHOOK CONFIG
+        // Replace this URL with your Google Apps Script Web App URL
+        // See instructions at bottom of page for setup
+        // ============================================
+        const GOOGLE_SHEETS_WEBHOOK = 'https://script.google.com/macros/s/AKfycbyY8onpudsm_lmzEcXxnH0IQaOyXJxfBNBkNKvlNi0mHaKZUQvJr6Djtr1Hk9mn_FW0/exec'; // Leave empty to disable, or paste your URL
+
+        // ============================================
         // QUESTIONS CONFIG
         // ============================================
         const questions = [
+            {
+                id: 'whoDis',
+                type: 'single',
+                label: "Who Dis? 👀",
+                hint: "Pick your fighter. No aliases allowed.",
+                options: [
+                    { value: 'Jared', label: 'Jared', emoji: '🦈' },
+                    { value: 'Daniel', label: 'Daniel', emoji: '🎸' },
+                    { value: 'David', label: 'David', emoji: '🧠' },
+                    { value: 'Lisa', label: 'Lisa', emoji: '✨' }
+                ],
+                required: true
+            },
             {
                 id: 'budget',
                 type: 'slider',
@@ -1261,6 +1328,7 @@
 
             // Render answers summary
             const answerLabels = {
+                whoDis: 'Who Dis',
                 budget: 'Budget',
                 driveTime: 'Drive Tolerance',
                 parkingPatience: 'Parking Patience',
@@ -1309,6 +1377,54 @@
         // ============================================
         // SHARE FUNCTIONS
         // ============================================
+        async function submitToDashboard() {
+            const btn = document.getElementById('btn-submit');
+
+            if (!GOOGLE_SHEETS_WEBHOOK) {
+                showToast('Dashboard not configured yet!');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = '⏳ Submitting...';
+
+            const { ranked, answers } = window.resultsData;
+            const data = {
+                timestamp: new Date().toISOString(),
+                whoDis: answers.whoDis || 'Anonymous',
+                winner: experiences[ranked[0].key].name,
+                winnerScore: ranked[0].score,
+                allScores: ranked.map(r => `${experiences[r.key].name}: ${r.score}`).join(' | '),
+                budget: answers.budget,
+                driveTime: answers.driveTime,
+                parkingPatience: answers.parkingPatience,
+                crowdTolerance: answers.crowdTolerance,
+                activities: (answers.activities || []).join(', '),
+                food: answers.food,
+                drinks: answers.drinks,
+                shootingComfort: answers.shootingComfort,
+                startTime: answers.startTime,
+                notes: answers.notes || ''
+            };
+
+            try {
+                await fetch(GOOGLE_SHEETS_WEBHOOK, {
+                    method: 'POST',
+                    mode: 'no-cors', // Required for Google Apps Script
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                btn.textContent = '✅ Submitted!';
+                btn.classList.add('submitted');
+                showToast('Results sent to dashboard!');
+            } catch (error) {
+                btn.textContent = '❌ Failed - Try Again';
+                btn.disabled = false;
+                showToast('Submission failed');
+            }
+        }
+
         function copyResults() {
             const { ranked } = window.resultsData;
             let text = "🌴 My Miami Saturday Night Results 🌴\n\n";
