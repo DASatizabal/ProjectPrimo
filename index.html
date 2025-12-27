@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Miami Saturday Night Selector 🌴</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --primary: #ff6b6b;
+            --secondary: #4ecdc4;
+            --dark: #2c3e50;
+            --light: #f7f7f7;
+            --warning: #f39c12;
+            --success: #27ae60;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #fff;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .screen {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            color: var(--secondary);
+        }
+
+        .intro-screen {
+            text-align: center;
+            padding-top: 15vh;
+        }
+
+        .intro-screen .emoji {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .intro-screen p {
+            color: #aaa;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 16px 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.2s;
+            touch-action: manipulation;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), #ee5a5a);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .btn-primary:hover, .btn-primary:active {
+            transform: scale(1.02);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.5);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid var(--secondary);
+            color: var(--secondary);
+            padding: 12px 24px;
+            font-size: 0.95rem;
+        }
+
+        .btn-small {
+            padding: 10px 20px;
+            font-size: 0.9rem;
+        }
+
+        .progress-bar {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            height: 8px;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--secondary), var(--primary));
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+
+        .progress-text {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 25px;
+        }
+
+        .question-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .question-label {
+            font-size: 1.15rem;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .question-hint {
+            font-size: 0.85rem;
+            color: #888;
+            margin-top: -10px;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        .slider-container {
+            padding: 10px 0;
+        }
+
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: #888;
+            margin-bottom: 10px;
+        }
+
+        .slider {
+            width: 100%;
+            height: 40px;
+            -webkit-appearance: none;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        .slider::-webkit-slider-runnable-track {
+            height: 8px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 4px;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 28px;
+            height: 28px;
+            background: var(--secondary);
+            border-radius: 50%;
+            margin-top: -10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .slider::-moz-range-track {
+            height: 8px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 4px;
+        }
+
+        .slider::-moz-range-thumb {
+            width: 28px;
+            height: 28px;
+            background: var(--secondary);
+            border-radius: 50%;
+            border: none;
+        }
+
+        .slider-value {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--secondary);
+            margin-top: 10px;
+        }
+
+        .option-grid {
+            display: grid;
+            gap: 12px;
+        }
+
+        .option-btn {
+            background: rgba(255,255,255,0.08);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            padding: 16px 20px;
+            text-align: left;
+            color: #fff;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .option-btn:hover {
+            background: rgba(255,255,255,0.12);
+        }
+
+        .option-btn.selected {
+            border-color: var(--secondary);
+            background: rgba(78, 205, 196, 0.15);
+        }
+
+        .option-btn .emoji {
+            font-size: 1.3rem;
+        }
+
+        .multi-select .option-btn.selected::after {
+            content: '✓';
+            margin-left: auto;
+            color: var(--secondary);
+            font-weight: bold;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .nav-buttons .btn {
+            flex: 1;
+        }
+
+        .btn-back {
+            background: rgba(255,255,255,0.1);
+            color: #aaa;
+        }
+
+        .btn-next {
+            background: linear-gradient(135deg, var(--secondary), #3dbdb5);
+            color: white;
+        }
+
+        .btn-next:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            background: rgba(255,255,255,0.08);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 15px;
+            color: #fff;
+            font-size: 1rem;
+            font-family: inherit;
+            resize: vertical;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--secondary);
+        }
+
+        textarea::placeholder {
+            color: #666;
+        }
+
+        .validation-error {
+            color: var(--primary);
+            font-size: 0.85rem;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .validation-error.show {
+            display: block;
+        }
+
+        /* Results Page */
+        .results-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .results-header .emoji {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .result-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+
+        .result-card.rank-1 {
+            border: 2px solid var(--warning);
+            background: rgba(243, 156, 18, 0.1);
+        }
+
+        .result-header {
+            padding: 18px 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .result-rank {
+            font-size: 1.5rem;
+            font-weight: 800;
+            min-width: 35px;
+        }
+
+        .rank-1 .result-rank { color: #f1c40f; }
+        .rank-2 .result-rank { color: #bdc3c7; }
+        .rank-3 .result-rank { color: #cd7f32; }
+
+        .result-info {
+            flex: 1;
+        }
+
+        .result-name {
+            font-weight: 600;
+            font-size: 1.05rem;
+            margin-bottom: 4px;
+        }
+
+        .result-commentary {
+            font-size: 0.85rem;
+            color: #aaa;
+            font-style: italic;
+        }
+
+        .result-score {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--secondary);
+        }
+
+        .result-expand {
+            font-size: 1.2rem;
+            color: #666;
+            transition: transform 0.2s;
+        }
+
+        .result-card.expanded .result-expand {
+            transform: rotate(180deg);
+        }
+
+        .result-details {
+            display: none;
+            padding: 0 20px 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .result-card.expanded .result-details {
+            display: block;
+        }
+
+        .score-breakdown {
+            margin: 15px 0;
+        }
+
+        .score-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 0.85rem;
+            color: #aaa;
+        }
+
+        .score-row span:last-child {
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .score-row.positive span:last-child { color: var(--success); }
+        .score-row.negative span:last-child { color: var(--primary); }
+
+        .gotcha-box {
+            background: rgba(243, 156, 18, 0.15);
+            border-left: 3px solid var(--warning);
+            padding: 12px 15px;
+            border-radius: 0 8px 8px 0;
+            margin-top: 15px;
+        }
+
+        .gotcha-box h4 {
+            color: var(--warning);
+            font-size: 0.85rem;
+            margin-bottom: 5px;
+        }
+
+        .gotcha-box p {
+            font-size: 0.8rem;
+            color: #ccc;
+        }
+
+        .section-title {
+            font-size: 1rem;
+            color: var(--secondary);
+            margin: 30px 0 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .answers-summary {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 15px 20px;
+        }
+
+        .answer-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-size: 0.9rem;
+        }
+
+        .answer-row:last-child {
+            border-bottom: none;
+        }
+
+        .answer-row .label {
+            color: #888;
+        }
+
+        .answer-row .value {
+            color: #fff;
+            font-weight: 500;
+            text-align: right;
+            max-width: 60%;
+        }
+
+        .share-section {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .share-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .btn-copy {
+            background: rgba(78, 205, 196, 0.2);
+            border: 2px solid var(--secondary);
+            color: var(--secondary);
+        }
+
+        .btn-download {
+            background: rgba(255, 107, 107, 0.2);
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-reset {
+            background: rgba(255,255,255,0.1);
+            border: 2px solid #666;
+            color: #888;
+            margin-top: 10px;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--success);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 500;
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .scoring-explainer {
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 25px;
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        .scoring-explainer h4 {
+            color: #aaa;
+            margin-bottom: 8px;
+        }
+
+        /* Hosting Instructions */
+        .hosting-instructions {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .hosting-instructions h4 {
+            color: #888;
+            margin-bottom: 10px;
+        }
+
+        .hosting-instructions code {
+            background: rgba(0,0,0,0.3);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+
+        .hosting-instructions p {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Intro Screen -->
+        <div class="screen active" id="screen-intro">
+            <div class="intro-screen">
+                <div class="emoji">🌴🌙</div>
+                <h1>Miami Saturday Night Selector</h1>
+                <p>Answer a few questions and we'll tell you exactly how to spend your Saturday night. No pressure. Just vibes. And maybe some light roasting.</p>
+                <button class="btn btn-primary" onclick="startQuiz()">Let's Go 🚀</button>
+            </div>
+        </div>
+
+        <!-- Question Screens -->
+        <div class="screen" id="screen-questions">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div class="progress-text" id="progress-text">Question 1 of 10</div>
+
+            <!-- Question containers will be shown/hidden -->
+            <div id="question-container"></div>
+
+            <div class="nav-buttons">
+                <button class="btn btn-back btn-small" id="btn-back" onclick="prevQuestion()">← Back</button>
+                <button class="btn btn-next btn-small" id="btn-next" onclick="nextQuestion()">Next →</button>
+            </div>
+            <div class="validation-error" id="validation-error">⚠️ This one's required, friend.</div>
+        </div>
+
+        <!-- Results Screen -->
+        <div class="screen" id="screen-results">
+            <div class="results-header">
+                <div class="emoji">🎉</div>
+                <h1>Your Miami Destiny</h1>
+                <p style="color: #888; font-size: 0.9rem;">The algorithm has spoken. Here's your ranked lineup.</p>
+            </div>
+
+            <div class="scoring-explainer">
+                <h4>📊 How We Scored This</h4>
+                <p>Each experience starts at 50 points. We add/subtract based on your preferences matching each experience's vibe, cost, drive time, parking difficulty, and crowd level. Budget mismatches, dealbreakers (like hating guns), and preference alignments all factor in. Expand each result to see the breakdown.</p>
+            </div>
+
+            <div id="results-list"></div>
+
+            <h3 class="section-title">📝 Your Answers</h3>
+            <div class="answers-summary" id="answers-summary"></div>
+
+            <h3 class="section-title">📤 Share Your Results</h3>
+            <div class="share-section">
+                <button class="btn share-btn btn-copy" onclick="copyResults()">📋 Copy to Clipboard</button>
+                <button class="btn share-btn btn-download" onclick="downloadJSON()">💾 Download JSON</button>
+                <button class="btn share-btn btn-reset" onclick="resetQuiz()">🔄 Start Over</button>
+            </div>
+
+            <div class="hosting-instructions">
+                <h4>🖥️ Local Hosting Instructions</h4>
+                <p><strong>Option A:</strong> Just double-click <code>index.html</code> to open in your browser.</p>
+                <p><strong>Option B (Python):</strong> <code>python -m http.server 8000</code> then visit <code>http://localhost:8000</code></p>
+                <p><strong>Option B (Node):</strong> <code>npx serve .</code> or <code>npx http-server</code></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">Copied to clipboard!</div>
+
+    <script>
+        // ============================================
+        // EXPERIENCE DATA (from the Miami Guide)
+        // ============================================
+        const experiences = {
+            cityplace: {
+                name: "CityPlace Doral",
+                emoji: "🎯",
+                vibe: "Modern, convenient, and safe outdoor mall nightlife with escape rooms and bars.",
+                costMin: 60,
+                costMax: 100,
+                driveTime: 10, // minutes from Doral
+                parkingDifficulty: 1, // 1-5
+                crowdLevel: 4, // 1-5
+                gotchas: [
+                    "Book the escape room in advance or you'll be solving the puzzle of 'why didn't I plan ahead'",
+                    "Bars can have waits on Saturday—patience, grasshopper"
+                ]
+            },
+            wynwood: {
+                name: "Wynwood Hipster Mode",
+                emoji: "🎨",
+                vibe: "Trendy, artistic, and chaotic urban exploration with craft cocktails and street art.",
+                costMin: 80,
+                costMax: 130,
+                driveTime: 35, // 25-40 min average
+                parkingDifficulty: 4,
+                crowdLevel: 5,
+                gotchas: [
+                    "Parking is a competitive sport here. Budget an extra 20 mins to circle like a shark",
+                    "Top restaurants need reservations weeks out. Spontaneity is for CityPlace."
+                ]
+            },
+            krome: {
+                name: "Rural Miami (Krome)",
+                emoji: "🤠",
+                vibe: "Authentic, rustic, and festive outdoor ranchero party with grilled meat and live Hispanic music.",
+                costMin: 60,
+                costMax: 100,
+                driveTime: 45, // 35-50 min average
+                parkingDifficulty: 2,
+                crowdLevel: 3,
+                gotchas: [
+                    "Getting a rideshare back late at night is... ambitious. Have a DD or prepare to camp",
+                    "Venues sometimes close unexpectedly. Call ahead or embrace the adventure"
+                ]
+            },
+            keys: {
+                name: "Keys Experience",
+                emoji: "🦞",
+                vibe: "Ambitious, scenic, and salty road trip adventure with seafood, key lime pie, and waterfront dive bars.",
+                costMin: 90,
+                costMax: 140,
+                driveTime: 120, // 1.5-2 hours each way
+                parkingDifficulty: 5, // time investment, not actual parking
+                crowdLevel: 3,
+                gotchas: [
+                    "3-4 hours of driving round trip. This is a COMMITMENT, not a casual Saturday",
+                    "You'll spend more time in the car than at the actual venues. Plan accordingly."
+                ]
+            },
+            ratchet: {
+                name: "Basic Ratchet Miami",
+                emoji: "🔫",
+                vibe: "Unpretentious, loud, and quintessentially South Florida fun with shooting range and Flanigan's.",
+                costMin: 60,
+                costMax: 90,
+                driveTime: 10,
+                parkingDifficulty: 1,
+                crowdLevel: 4,
+                gotchas: [
+                    "Shooting ranges require valid ID and usually 2+ people to rent. Check their rules.",
+                    "Flanigan's ALWAYS has a wait. Get in their online queue early or suffer."
+                ]
+            }
+        };
+
+        // ============================================
+        // QUESTIONS CONFIG
+        // ============================================
+        const questions = [
+            {
+                id: 'budget',
+                type: 'slider',
+                label: "What's your budget per person tonight?",
+                hint: "Be honest. We won't judge. Much.",
+                min: 30,
+                max: 200,
+                step: 10,
+                default: 80,
+                unit: '$',
+                labels: ['$30 (thrifty)', '$200 (baller)']
+            },
+            {
+                id: 'driveTime',
+                type: 'slider',
+                label: "How far are you willing to drive tonight?",
+                hint: "Round trip, not one way. We're not monsters.",
+                min: 0,
+                max: 240,
+                step: 15,
+                default: 60,
+                unit: ' min',
+                labels: ['0 min (lazy king)', '4 hrs (road warrior)']
+            },
+            {
+                id: 'parkingPatience',
+                type: 'slider',
+                label: "Parking patience level?",
+                hint: "How many laps around the block before you lose it?",
+                min: 1,
+                max: 5,
+                step: 1,
+                default: 3,
+                labels: ['I will circle forever', 'I will cry immediately'],
+                displayMap: {1: '😎 Zen Master', 2: '🙂 Patient', 3: '😐 Normal Human', 4: '😤 Getting Antsy', 5: '😭 Immediate Tears'}
+            },
+            {
+                id: 'crowdTolerance',
+                type: 'slider',
+                label: "Crowd tolerance?",
+                hint: "How many strangers can you handle breathing near you?",
+                min: 1,
+                max: 5,
+                step: 1,
+                default: 3,
+                labels: ['Chill vibes only', 'CHAOS MODE'],
+                displayMap: {1: '🧘 Hermit Mode', 2: '😌 Low-Key', 3: '🙂 Normal', 4: '🎉 Bring It', 5: '🔥 MAXIMUM CHAOS'}
+            },
+            {
+                id: 'activities',
+                type: 'multiselect',
+                label: "What activities sound fun tonight?",
+                hint: "Pick all that apply. No wrong answers. Mostly.",
+                options: [
+                    { value: 'puzzles', label: 'Puzzles & Escape Rooms', emoji: '🧩' },
+                    { value: 'art', label: 'Art Scene & Galleries', emoji: '🖼️' },
+                    { value: 'livemusic', label: 'Live Music', emoji: '🎵' },
+                    { value: 'roadtrip', label: 'Scenic Road Trip', emoji: '🚗' },
+                    { value: 'shooting', label: 'Shooting Range', emoji: '🎯' }
+                ],
+                required: false
+            },
+            {
+                id: 'food',
+                type: 'single',
+                label: "What's your food priority?",
+                hint: "Choose wisely. This affects everything.",
+                options: [
+                    { value: 'seafood', label: 'Fresh Seafood', emoji: '🦐' },
+                    { value: 'grilled', label: 'Grilled Meat / Asado', emoji: '🥩' },
+                    { value: 'pub', label: 'Pub Food & Wings', emoji: '🍗' },
+                    { value: 'whatever', label: 'I just need calories', emoji: '🍕' }
+                ]
+            },
+            {
+                id: 'drinks',
+                type: 'single',
+                label: "Drinking plans?",
+                hint: "No judgment zone. Okay, maybe a little judgment.",
+                options: [
+                    { value: 'none', label: 'None / DD Tonight', emoji: '🚗' },
+                    { value: 'casual', label: 'A drink or two', emoji: '🍺' },
+                    { value: 'aggressive', label: 'I came to hydrate aggressively', emoji: '🍹' }
+                ]
+            },
+            {
+                id: 'shootingComfort',
+                type: 'single',
+                label: "Are you comfortable with a shooting range?",
+                hint: "This is required. It affects one entire experience.",
+                options: [
+                    { value: 'yes', label: 'Yes, let\'s go!', emoji: '✅' },
+                    { value: 'no', label: 'Hard no', emoji: '❌' },
+                    { value: 'maybe', label: 'Maybe... depends', emoji: '🤔' },
+                    { value: 'depends', label: 'Depends on the group', emoji: '👥' }
+                ],
+                required: true
+            },
+            {
+                id: 'startTime',
+                type: 'single',
+                label: "When do you want to start?",
+                hint: "This helps us judge your sleep schedule.",
+                options: [
+                    { value: 'early', label: 'Early (5-6pm)', emoji: '🌅' },
+                    { value: 'normal', label: 'Normal (7-8pm)', emoji: '🌆' },
+                    { value: 'late', label: 'Late Goblin Hours (9pm+)', emoji: '🦇' }
+                ]
+            },
+            {
+                id: 'notes',
+                type: 'textarea',
+                label: "Anything else we should know?",
+                hint: "Allergies? Phobias? Strong opinions about parking garages?",
+                placeholder: "Type here or leave blank if you're boring...",
+                required: false
+            }
+        ];
+
+        // ============================================
+        // STATE
+        // ============================================
+        let currentQuestion = 0;
+        let answers = {};
+
+        // ============================================
+        // RENDER FUNCTIONS
+        // ============================================
+        function renderQuestion(index) {
+            const q = questions[index];
+            const container = document.getElementById('question-container');
+            let html = `<div class="question-card">
+                <div class="question-label">${q.label}</div>
+                <div class="question-hint">${q.hint}</div>`;
+
+            if (q.type === 'slider') {
+                const currentVal = answers[q.id] !== undefined ? answers[q.id] : q.default;
+                let displayVal = q.displayMap ? q.displayMap[currentVal] : (q.unit === '$' ? '$' + currentVal : currentVal + q.unit);
+                html += `
+                    <div class="slider-container">
+                        <div class="slider-labels">
+                            <span>${q.labels[0]}</span>
+                            <span>${q.labels[1]}</span>
+                        </div>
+                        <input type="range" class="slider" id="input-${q.id}"
+                            min="${q.min}" max="${q.max}" step="${q.step}" value="${currentVal}"
+                            oninput="updateSliderDisplay('${q.id}', this.value)">
+                        <div class="slider-value" id="display-${q.id}">${displayVal}</div>
+                    </div>`;
+            } else if (q.type === 'single') {
+                html += `<div class="option-grid">`;
+                q.options.forEach(opt => {
+                    const selected = answers[q.id] === opt.value ? 'selected' : '';
+                    html += `<button class="option-btn ${selected}" onclick="selectOption('${q.id}', '${opt.value}', this)">
+                        <span class="emoji">${opt.emoji}</span>
+                        <span>${opt.label}</span>
+                    </button>`;
+                });
+                html += `</div>`;
+            } else if (q.type === 'multiselect') {
+                const selected = answers[q.id] || [];
+                html += `<div class="option-grid multi-select">`;
+                q.options.forEach(opt => {
+                    const isSelected = selected.includes(opt.value) ? 'selected' : '';
+                    html += `<button class="option-btn ${isSelected}" onclick="toggleMulti('${q.id}', '${opt.value}', this)">
+                        <span class="emoji">${opt.emoji}</span>
+                        <span>${opt.label}</span>
+                    </button>`;
+                });
+                html += `</div>`;
+            } else if (q.type === 'textarea') {
+                const val = answers[q.id] || '';
+                html += `<textarea id="input-${q.id}" placeholder="${q.placeholder}">${val}</textarea>`;
+            }
+
+            html += `</div>`;
+            container.innerHTML = html;
+
+            // Update progress
+            document.getElementById('progress-fill').style.width = ((index + 1) / questions.length * 100) + '%';
+            document.getElementById('progress-text').textContent = `Question ${index + 1} of ${questions.length}`;
+
+            // Update nav buttons
+            document.getElementById('btn-back').style.visibility = index === 0 ? 'hidden' : 'visible';
+            document.getElementById('btn-next').textContent = index === questions.length - 1 ? 'See Results →' : 'Next →';
+
+            // Hide validation error
+            document.getElementById('validation-error').classList.remove('show');
+        }
+
+        function updateSliderDisplay(id, value) {
+            const q = questions.find(q => q.id === id);
+            let displayVal = q.displayMap ? q.displayMap[value] : (q.unit === '$' ? '$' + value : value + q.unit);
+            document.getElementById('display-' + id).textContent = displayVal;
+            answers[id] = parseInt(value);
+        }
+
+        function selectOption(id, value, btn) {
+            answers[id] = value;
+            btn.parentElement.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+        }
+
+        function toggleMulti(id, value, btn) {
+            if (!answers[id]) answers[id] = [];
+            const idx = answers[id].indexOf(value);
+            if (idx > -1) {
+                answers[id].splice(idx, 1);
+                btn.classList.remove('selected');
+            } else {
+                answers[id].push(value);
+                btn.classList.add('selected');
+            }
+        }
+
+        // ============================================
+        // NAVIGATION
+        // ============================================
+        function startQuiz() {
+            document.getElementById('screen-intro').classList.remove('active');
+            document.getElementById('screen-questions').classList.add('active');
+            renderQuestion(0);
+        }
+
+        function nextQuestion() {
+            const q = questions[currentQuestion];
+
+            // Save slider/textarea values
+            if (q.type === 'slider') {
+                answers[q.id] = parseInt(document.getElementById('input-' + q.id).value);
+            } else if (q.type === 'textarea') {
+                answers[q.id] = document.getElementById('input-' + q.id).value;
+            }
+
+            // Validation
+            if (q.required && !answers[q.id]) {
+                document.getElementById('validation-error').classList.add('show');
+                return;
+            }
+
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                renderQuestion(currentQuestion);
+            } else {
+                showResults();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                renderQuestion(currentQuestion);
+            }
+        }
+
+        // ============================================
+        // SCORING LOGIC
+        // ============================================
+        function calculateScores() {
+            const scores = {};
+            const breakdowns = {};
+
+            // Initialize all experiences with base score of 50
+            Object.keys(experiences).forEach(key => {
+                scores[key] = 50;
+                breakdowns[key] = [];
+            });
+
+            const budget = answers.budget || 80;
+            const driveTime = answers.driveTime || 60;
+            const parkingPatience = answers.parkingPatience || 3;
+            const crowdTolerance = answers.crowdTolerance || 3;
+            const activities = answers.activities || [];
+            const food = answers.food || 'whatever';
+            const drinks = answers.drinks || 'casual';
+            const shootingComfort = answers.shootingComfort || 'no';
+            const startTime = answers.startTime || 'normal';
+
+            // ========== BUDGET SCORING ==========
+            Object.keys(experiences).forEach(key => {
+                const exp = experiences[key];
+                const avgCost = (exp.costMin + exp.costMax) / 2;
+
+                if (budget < exp.costMin) {
+                    const penalty = -20;
+                    scores[key] += penalty;
+                    breakdowns[key].push({ label: 'Budget below range', value: penalty, negative: true });
+                } else if (budget >= exp.costMax) {
+                    const bonus = 10;
+                    scores[key] += bonus;
+                    breakdowns[key].push({ label: 'Budget fits comfortably', value: '+' + bonus, positive: true });
+                } else {
+                    const bonus = 5;
+                    scores[key] += bonus;
+                    breakdowns[key].push({ label: 'Budget is tight but works', value: '+' + bonus, positive: true });
+                }
+            });
+
+            // ========== DRIVE TIME SCORING ==========
+            // Keys needs HIGH drive tolerance (120+ min each way, so 240 round trip)
+            if (driveTime >= 180) {
+                scores.keys += 25;
+                breakdowns.keys.push({ label: 'Drive tolerance: Road warrior status', value: '+25', positive: true });
+            } else if (driveTime >= 120) {
+                scores.keys += 10;
+                breakdowns.keys.push({ label: 'Drive tolerance: Acceptable', value: '+10', positive: true });
+            } else {
+                scores.keys -= 30;
+                breakdowns.keys.push({ label: 'Drive tolerance too low for Keys', value: '-30', negative: true });
+            }
+
+            // CityPlace and Ratchet are close
+            if (driveTime <= 30) {
+                scores.cityplace += 15;
+                scores.ratchet += 15;
+                breakdowns.cityplace.push({ label: 'Low drive preference = local', value: '+15', positive: true });
+                breakdowns.ratchet.push({ label: 'Low drive preference = local', value: '+15', positive: true });
+            }
+
+            // Krome needs medium drive tolerance
+            if (driveTime >= 60 && driveTime <= 120) {
+                scores.krome += 15;
+                breakdowns.krome.push({ label: 'Drive tolerance fits Krome perfectly', value: '+15', positive: true });
+            } else if (driveTime < 45) {
+                scores.krome -= 10;
+                breakdowns.krome.push({ label: 'Might feel the drive to Krome', value: '-10', negative: true });
+            }
+
+            // Wynwood moderate drive
+            if (driveTime >= 45) {
+                scores.wynwood += 5;
+                breakdowns.wynwood.push({ label: 'Drive tolerance covers Wynwood', value: '+5', positive: true });
+            }
+
+            // ========== PARKING PATIENCE ==========
+            // Higher number = less patience
+            // Wynwood has parkingDifficulty 4
+            if (parkingPatience >= 4) {
+                scores.wynwood -= 20;
+                breakdowns.wynwood.push({ label: 'Low parking patience + Wynwood = pain', value: '-20', negative: true });
+            } else if (parkingPatience <= 2) {
+                scores.wynwood += 10;
+                breakdowns.wynwood.push({ label: 'Parking patience for Wynwood chaos', value: '+10', positive: true });
+            }
+
+            // Easy parking spots get bonus for impatient people
+            if (parkingPatience >= 4) {
+                scores.cityplace += 10;
+                scores.ratchet += 10;
+                scores.krome += 5;
+                breakdowns.cityplace.push({ label: 'Free garage parking = no stress', value: '+10', positive: true });
+                breakdowns.ratchet.push({ label: 'Easy parking vibes', value: '+10', positive: true });
+                breakdowns.krome.push({ label: 'Parking is chill out there', value: '+5', positive: true });
+            }
+
+            // ========== CROWD TOLERANCE ==========
+            // Wynwood is 5, CityPlace is 4, Ratchet is 4, Krome is 3, Keys is 3
+            if (crowdTolerance >= 4) {
+                scores.wynwood += 15;
+                scores.cityplace += 10;
+                breakdowns.wynwood.push({ label: 'High crowd tolerance = Wynwood ready', value: '+15', positive: true });
+                breakdowns.cityplace.push({ label: 'Can handle CityPlace energy', value: '+10', positive: true });
+            } else if (crowdTolerance <= 2) {
+                scores.wynwood -= 15;
+                scores.cityplace -= 10;
+                scores.keys += 10;
+                scores.krome += 10;
+                breakdowns.wynwood.push({ label: 'Low crowd tolerance vs Wynwood chaos', value: '-15', negative: true });
+                breakdowns.cityplace.push({ label: 'CityPlace gets packed', value: '-10', negative: true });
+                breakdowns.keys.push({ label: 'Keys are more chill', value: '+10', positive: true });
+                breakdowns.krome.push({ label: 'Krome is spacious', value: '+10', positive: true });
+            }
+
+            // ========== ACTIVITIES ==========
+            if (activities.includes('puzzles')) {
+                scores.cityplace += 20;
+                breakdowns.cityplace.push({ label: 'Puzzle lover = Escapology time', value: '+20', positive: true });
+            }
+
+            if (activities.includes('art')) {
+                scores.wynwood += 25;
+                breakdowns.wynwood.push({ label: 'Art scene = Wynwood is calling', value: '+25', positive: true });
+            }
+
+            if (activities.includes('livemusic')) {
+                scores.krome += 20;
+                scores.wynwood += 10;
+                breakdowns.krome.push({ label: 'Live music = Nando Grill vibes', value: '+20', positive: true });
+                breakdowns.wynwood.push({ label: 'Wynwood has music too', value: '+10', positive: true });
+            }
+
+            if (activities.includes('roadtrip')) {
+                scores.keys += 20;
+                breakdowns.keys.push({ label: 'Road trip lover identified', value: '+20', positive: true });
+            }
+
+            if (activities.includes('shooting')) {
+                scores.ratchet += 15;
+                breakdowns.ratchet.push({ label: 'Shooting interest noted', value: '+15', positive: true });
+            }
+
+            // ========== SHOOTING COMFORT (CRITICAL) ==========
+            if (shootingComfort === 'no') {
+                scores.ratchet = Math.min(scores.ratchet, 10); // Cap at 10
+                breakdowns.ratchet.push({ label: '🚫 DEALBREAKER: No shooting range', value: 'capped', negative: true });
+            } else if (shootingComfort === 'yes') {
+                scores.ratchet += 20;
+                breakdowns.ratchet.push({ label: 'Shooting comfort = full send', value: '+20', positive: true });
+            } else {
+                scores.ratchet += 5;
+                breakdowns.ratchet.push({ label: 'Shooting maybe = slight bonus', value: '+5', positive: true });
+            }
+
+            // ========== FOOD ==========
+            if (food === 'seafood') {
+                scores.keys += 20;
+                breakdowns.keys.push({ label: 'Seafood craving = Keys calling', value: '+20', positive: true });
+            }
+
+            if (food === 'grilled') {
+                scores.krome += 25;
+                breakdowns.krome.push({ label: 'Grilled meat = Carne en vara time', value: '+25', positive: true });
+            }
+
+            if (food === 'pub') {
+                scores.ratchet += 20;
+                scores.cityplace += 10;
+                breakdowns.ratchet.push({ label: 'Pub food = Flanigan\'s is destiny', value: '+20', positive: true });
+                breakdowns.cityplace.push({ label: 'Tap 42 has solid pub vibes', value: '+10', positive: true });
+            }
+
+            // ========== DRINKS ==========
+            if (drinks === 'aggressive') {
+                scores.wynwood += 10;
+                scores.cityplace += 10;
+                scores.ratchet += 10;
+                breakdowns.wynwood.push({ label: 'Aggressive hydration = bar scene', value: '+10', positive: true });
+                breakdowns.cityplace.push({ label: 'Multiple bars nearby', value: '+10', positive: true });
+                breakdowns.ratchet.push({ label: 'Flanigan\'s happy hour x2', value: '+10', positive: true });
+            }
+
+            if (drinks === 'none') {
+                scores.keys -= 5;
+                breakdowns.keys.push({ label: 'Sober + long drive = responsible', value: '-5', negative: true });
+            }
+
+            // ========== START TIME ==========
+            if (startTime === 'early') {
+                scores.keys += 10;
+                breakdowns.keys.push({ label: 'Early start helps with Keys drive', value: '+10', positive: true });
+            }
+
+            if (startTime === 'late') {
+                scores.keys -= 15;
+                scores.krome -= 5;
+                breakdowns.keys.push({ label: 'Late start + Keys = bad math', value: '-15', negative: true });
+                breakdowns.krome.push({ label: 'Krome venues close earlier', value: '-5', negative: true });
+            }
+
+            return { scores, breakdowns };
+        }
+
+        // ============================================
+        // RESULTS DISPLAY
+        // ============================================
+        function showResults() {
+            document.getElementById('screen-questions').classList.remove('active');
+            document.getElementById('screen-results').classList.add('active');
+
+            const { scores, breakdowns } = calculateScores();
+
+            // Sort experiences by score
+            const ranked = Object.keys(scores)
+                .map(key => ({ key, score: scores[key], breakdown: breakdowns[key] }))
+                .sort((a, b) => b.score - a.score);
+
+            // Generate witty commentary
+            const commentary = {
+                cityplace: [
+                    "Convenience is king, and you're the monarch of minimal effort.",
+                    "Why fight traffic when you can fight an escape room instead?",
+                    "Park once, party thrice. This is the way."
+                ],
+                wynwood: [
+                    "You're too cool for chain restaurants and parking lots.",
+                    "Hope you brought your art critique vocabulary and parking patience.",
+                    "Time to pretend you understand modern art while sipping $18 cocktails."
+                ],
+                krome: [
+                    "You want the real Miami, not the Instagram version.",
+                    "Carne en vara and live music await, you beautiful adventurer.",
+                    "Just remember: Uber doesn't like going out there at midnight."
+                ],
+                keys: [
+                    "Bold choice. Gas money is just the price of freedom.",
+                    "You're either a road trip romantic or slightly unhinged. Respect.",
+                    "The key lime pie better be worth the 3 hours of driving."
+                ],
+                ratchet: [
+                    "Pew pew then brew brew. A person of simple, beautiful tastes.",
+                    "Warrior Gun Range to Flanigan's is the most Miami pipeline ever.",
+                    "Baby back ribs and bullet casings. What a night."
+                ]
+            };
+
+            // Render results
+            let resultsHTML = '';
+            ranked.forEach((item, index) => {
+                const exp = experiences[item.key];
+                const rank = index + 1;
+                const comment = commentary[item.key][Math.floor(Math.random() * commentary[item.key].length)];
+
+                resultsHTML += `
+                    <div class="result-card rank-${rank}" onclick="toggleExpand(this)">
+                        <div class="result-header">
+                            <div class="result-rank">#${rank}</div>
+                            <div class="result-info">
+                                <div class="result-name">${exp.emoji} ${exp.name}</div>
+                                <div class="result-commentary">${comment}</div>
+                            </div>
+                            <div class="result-score">${item.score}</div>
+                            <div class="result-expand">▼</div>
+                        </div>
+                        <div class="result-details">
+                            <p style="color: #aaa; font-size: 0.85rem; margin-bottom: 10px;">${exp.vibe}</p>
+                            <div class="score-breakdown">
+                                <strong style="font-size: 0.85rem; color: #888;">Score Breakdown:</strong>
+                                ${item.breakdown.map(b => `
+                                    <div class="score-row ${b.positive ? 'positive' : ''} ${b.negative ? 'negative' : ''}">
+                                        <span>${b.label}</span>
+                                        <span>${b.value}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <div class="gotcha-box">
+                                <h4>⚠️ Gotchas</h4>
+                                ${exp.gotchas.map(g => `<p>• ${g}</p>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('results-list').innerHTML = resultsHTML;
+
+            // Render answers summary
+            const answerLabels = {
+                budget: 'Budget',
+                driveTime: 'Drive Tolerance',
+                parkingPatience: 'Parking Patience',
+                crowdTolerance: 'Crowd Tolerance',
+                activities: 'Activities',
+                food: 'Food Priority',
+                drinks: 'Drink Plans',
+                shootingComfort: 'Shooting Range',
+                startTime: 'Start Time',
+                notes: 'Special Notes'
+            };
+
+            const displayValues = {
+                parkingPatience: {1: 'Zen Master', 2: 'Patient', 3: 'Normal', 4: 'Antsy', 5: 'Immediate Tears'},
+                crowdTolerance: {1: 'Hermit', 2: 'Low-Key', 3: 'Normal', 4: 'Bring It', 5: 'Chaos Mode'}
+            };
+
+            let summaryHTML = '';
+            Object.keys(answers).forEach(key => {
+                let val = answers[key];
+                if (!val || (Array.isArray(val) && val.length === 0)) return;
+
+                if (key === 'budget') val = '$' + val;
+                if (key === 'driveTime') val = val + ' min';
+                if (displayValues[key]) val = displayValues[key][val];
+                if (Array.isArray(val)) val = val.join(', ');
+
+                summaryHTML += `
+                    <div class="answer-row">
+                        <span class="label">${answerLabels[key]}</span>
+                        <span class="value">${val}</span>
+                    </div>
+                `;
+            });
+
+            document.getElementById('answers-summary').innerHTML = summaryHTML;
+
+            // Store for sharing
+            window.resultsData = { ranked, answers };
+        }
+
+        function toggleExpand(card) {
+            card.classList.toggle('expanded');
+        }
+
+        // ============================================
+        // SHARE FUNCTIONS
+        // ============================================
+        function copyResults() {
+            const { ranked } = window.resultsData;
+            let text = "🌴 My Miami Saturday Night Results 🌴\n\n";
+
+            ranked.forEach((item, index) => {
+                const exp = experiences[item.key];
+                text += `#${index + 1}: ${exp.name} (Score: ${item.score})\n`;
+            });
+
+            text += "\nGenerated by Miami Saturday Night Selector";
+
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('Copied to clipboard!');
+            }).catch(() => {
+                showToast('Copy failed - check permissions');
+            });
+        }
+
+        function downloadJSON() {
+            const { ranked, answers } = window.resultsData;
+            const data = {
+                timestamp: new Date().toISOString(),
+                answers: answers,
+                results: ranked.map((item, index) => ({
+                    rank: index + 1,
+                    experience: experiences[item.key].name,
+                    score: item.score,
+                    breakdown: item.breakdown
+                }))
+            };
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `miami-night-results-${Date.now()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+
+            showToast('JSON downloaded!');
+        }
+
+        function resetQuiz() {
+            currentQuestion = 0;
+            answers = {};
+            document.getElementById('screen-results').classList.remove('active');
+            document.getElementById('screen-intro').classList.add('active');
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+    </script>
+</body>
+</html>
