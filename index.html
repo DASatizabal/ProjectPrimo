@@ -1368,6 +1368,11 @@ function doPost(e) {
 
             // Store for sharing
             window.resultsData = { ranked, answers };
+
+            // Auto-submit to dashboard
+            if (GOOGLE_SHEETS_WEBHOOK) {
+                submitToDashboard();
+            }
         }
 
         function toggleExpand(card) {
